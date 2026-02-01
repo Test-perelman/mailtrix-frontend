@@ -1,0 +1,424 @@
+.card {
+  position: relative;
+  background: var(--surface-raised);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  transition: box-shadow var(--duration-normal) var(--ease-out),
+              transform var(--duration-normal) var(--ease-out);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Accent stripe */
+.accentStripe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--terracotta) 0%,
+    var(--terracotta-light) 50%,
+    var(--golden) 100%
+  );
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-6);
+  padding-top: calc(var(--space-5) + 4px);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+
+.header:hover {
+  background: var(--paper-cream);
+}
+
+.headerMain {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.jobIcon {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--terracotta-glow) 0%, var(--paper-cream) 100%);
+  border-radius: var(--radius-md);
+  color: var(--terracotta);
+}
+
+.jobInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.jobTitle {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.jobMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.metaItem svg {
+  opacity: 0.6;
+}
+
+.metaDot {
+  width: 4px;
+  height: 4px;
+  border-radius: var(--radius-full);
+  background: var(--border-default);
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+/* Recruiter card */
+.recruiterCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--paper-cream);
+  border-radius: var(--radius-md);
+}
+
+.recruiterAvatar {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-raised);
+  border-radius: var(--radius-full);
+  color: var(--text-muted);
+}
+
+.recruiterInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.recruiterName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.recruiterEmail {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Stats badges */
+.statsBadges {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--paper-cream);
+  border-radius: var(--radius-full);
+}
+
+.badgeSuccess {
+  color: var(--sage);
+  background: var(--sage-glow);
+}
+
+.badgePending {
+  color: var(--terracotta);
+  background: var(--terracotta-glow);
+}
+
+.pendingDot {
+  width: 6px;
+  height: 6px;
+  background: var(--terracotta);
+  border-radius: var(--radius-full);
+  animation: pulse-soft 2s infinite;
+}
+
+/* Expand button */
+.expandButton {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  background: var(--paper-cream);
+  border-radius: var(--radius-full);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.expandButton:hover {
+  background: var(--paper-mid);
+  color: var(--text-primary);
+}
+
+/* Skills row */
+.skillsRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-6);
+  background: var(--paper-cream);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.skillsIcon {
+  color: var(--ocean);
+  flex-shrink: 0;
+}
+
+.skillsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.skillChip {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: var(--space-1) var(--space-3);
+  background: var(--surface-raised);
+  color: var(--ocean);
+  border-radius: var(--radius-full);
+  border: 1px solid rgba(78, 205, 196, 0.2);
+}
+
+/* Expanded content */
+.expandedContent {
+  overflow: hidden;
+}
+
+/* Section header */
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sectionCount {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Candidates list */
+.candidatesList {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Action bar */
+.actionBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-6);
+  background: linear-gradient(to top, var(--paper-cream), var(--surface-raised));
+  border-top: 1px solid var(--border-subtle);
+  gap: var(--space-5);
+}
+
+.notesField {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.notesLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.notesInput {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  transition: border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.notesInput::placeholder {
+  color: var(--text-muted);
+}
+
+.notesInput:focus {
+  border-color: var(--terracotta);
+  box-shadow: 0 0 0 3px var(--terracotta-glow);
+}
+
+.sendSection {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-shrink: 0;
+}
+
+.selectedCount {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.sendButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--paper-white);
+  background: linear-gradient(135deg, var(--terracotta) 0%, var(--terracotta-light) 100%);
+  border-radius: var(--radius-full);
+  transition: all var(--duration-fast) var(--ease-out);
+  box-shadow: var(--shadow-md);
+}
+
+.sendButton:hover:not(:disabled) {
+  box-shadow: var(--shadow-glow-terracotta);
+  transform: translateY(-1px);
+}
+
+.sendButton:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.sendButton:disabled {
+  opacity: 0.7;
+}
+
+.sendSuccess {
+  background: linear-gradient(135deg, var(--sage) 0%, var(--sage-light) 100%);
+}
+
+.sendSuccess:hover:not(:disabled) {
+  box-shadow: var(--shadow-glow-sage);
+}
+
+.sendError {
+  background: linear-gradient(135deg, var(--coral) 0%, #ff8888 100%);
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  .headerRight {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .recruiterCard {
+    flex: 1;
+  }
+
+  .actionBar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-4);
+  }
+
+  .sendSection {
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 640px) {
+  .header {
+    padding: var(--space-4);
+    padding-top: calc(var(--space-4) + 4px);
+  }
+
+  .skillsRow {
+    padding: var(--space-3) var(--space-4);
+    overflow-x: auto;
+  }
+
+  .skillsList {
+    flex-wrap: nowrap;
+  }
+
+  .sectionHeader,
+  .actionBar {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .recruiterCard {
+    display: none;
+  }
+
+  .statsBadges {
+    flex: 1;
+    justify-content: flex-end;
+  }
+}

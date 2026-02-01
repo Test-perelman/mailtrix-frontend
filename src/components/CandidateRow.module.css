@@ -1,0 +1,320 @@
+.row {
+  display: grid;
+  grid-template-columns: 1.5fr 1.2fr 1fr auto;
+  gap: var(--space-5);
+  align-items: center;
+  padding: var(--space-4) var(--space-6);
+  background: var(--surface-raised);
+  border-bottom: 1px solid var(--border-subtle);
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row:hover {
+  background: var(--paper-cream);
+}
+
+/* Status states */
+.row.approved {
+  background: linear-gradient(90deg, var(--sage-glow), transparent);
+}
+
+.row.rejected {
+  background: linear-gradient(90deg, rgba(255, 107, 107, 0.05), transparent);
+  opacity: 0.6;
+}
+
+/* Candidate Info */
+.candidateInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: var(--paper-cream);
+  border: 2px solid var(--border-default);
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.avatar[data-score="excellent"] {
+  background: linear-gradient(135deg, var(--sage-glow) 0%, var(--paper-cream) 100%);
+  border-color: var(--sage);
+}
+
+.avatar[data-score="good"] {
+  background: linear-gradient(135deg, var(--terracotta-glow) 0%, var(--paper-cream) 100%);
+  border-color: var(--terracotta);
+}
+
+.avatar[data-score="fair"] {
+  background: linear-gradient(135deg, rgba(201, 162, 39, 0.1) 0%, var(--paper-cream) 100%);
+  border-color: var(--golden);
+}
+
+.initials {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.nameRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+}
+
+.experience {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: var(--space-1) var(--space-2);
+  background: var(--paper-cream);
+  border-radius: var(--radius-sm);
+}
+
+.email {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Skills */
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.skillTag {
+  font-size: 0.7rem;
+  font-weight: 500;
+  padding: var(--space-1) var(--space-2);
+  background: var(--paper-cream);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.moreSkills {
+  font-size: 0.7rem;
+  padding: var(--space-1) var(--space-2);
+  color: var(--text-muted);
+}
+
+/* Score Section */
+.scoreSection {
+  display: flex;
+  justify-content: center;
+}
+
+.scoreCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.scoreRing {
+  position: relative;
+  width: 52px;
+  height: 52px;
+}
+
+.scoreCircle {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.scoreTrack {
+  fill: none;
+  stroke: var(--paper-mid);
+  stroke-width: 3;
+}
+
+.scoreProgress {
+  fill: none;
+  stroke: var(--sage);
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dasharray var(--duration-slow) var(--ease-out);
+}
+
+.scoreCard[data-score="excellent"] .scoreProgress {
+  stroke: var(--sage);
+}
+
+.scoreCard[data-score="good"] .scoreProgress {
+  stroke: var(--terracotta);
+}
+
+.scoreCard[data-score="fair"] .scoreProgress {
+  stroke: var(--golden);
+}
+
+.scoreInner {
+  position: absolute;
+  inset: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-raised);
+  border-radius: var(--radius-full);
+  gap: 0;
+}
+
+.scoreIcon {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.scoreValue {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.matchReason {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  max-width: 140px;
+  line-height: 1.4;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.approveBtn,
+.rejectBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-4);
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.approveBtn {
+  color: var(--sage);
+  background: var(--sage-glow);
+  border: 1px solid transparent;
+}
+
+.approveBtn:hover {
+  background: var(--sage);
+  color: var(--paper-white);
+  box-shadow: var(--shadow-glow-sage);
+}
+
+.rejectBtn {
+  color: var(--text-muted);
+  background: var(--paper-cream);
+  border: 1px solid var(--border-default);
+}
+
+.rejectBtn:hover {
+  color: var(--coral);
+  border-color: var(--coral);
+  background: rgba(255, 107, 107, 0.1);
+}
+
+/* Status Badge */
+.statusBadge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+}
+
+.statusBadge[data-status="approved"] {
+  color: var(--sage);
+  background: var(--sage-glow);
+}
+
+.statusBadge[data-status="rejected"] {
+  color: var(--text-muted);
+  background: var(--paper-cream);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .row {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    padding: var(--space-4);
+  }
+
+  .candidateInfo {
+    justify-content: flex-start;
+  }
+
+  .skills {
+    padding-left: calc(48px + var(--space-4));
+  }
+
+  .scoreCard {
+    flex-direction: row;
+    width: 100%;
+    padding-left: calc(48px + var(--space-4));
+  }
+
+  .matchReason {
+    max-width: none;
+    flex: 1;
+  }
+
+  .actions {
+    justify-content: flex-end;
+    padding-top: var(--space-2);
+  }
+}
+
+@media (max-width: 640px) {
+  .skills,
+  .scoreCard {
+    padding-left: 0;
+  }
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .initials {
+    font-size: 0.9rem;
+  }
+}
