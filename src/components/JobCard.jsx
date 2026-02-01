@@ -2,20 +2,25 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Briefcase, MapPin, Clock, Code2, ChevronDown,
-  Send, Users, CheckCircle, Loader2, AlertCircle, User
+  Send, Users, CheckCircle, Loader2, AlertCircle, User, MessageSquare
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import CandidateRow from './CandidateRow';
+import ConversationThread from './ConversationThread';
+import { useJobMatches } from '../store/useStore';
 import styles from './JobCard.module.css';
 
-const N8N_WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://n8n.352674918.xyz/webhook/approval';
+const N8N_WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL || 'https://n8n.352674918.xyz/webhook/mailtrix-approval';
 const API_KEY = import.meta.env.VITE_APPROVAL_API_KEY || '';
 
 export default function JobCard({ job, onUpdateCandidate }) {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [activeTab, setActiveTab] = useState('candidates'); // 'candidates' or 'conversation'
   const [isSending, setIsSending] = useState(false);
   const [sendStatus, setSendStatus] = useState(null);
   const [managerNotes, setManagerNotes] = useState('');
+
+  const { getThreadsByJobId, setThreads, markThreadsRead } = useJobMatches();
 
   const {
     job_id,
@@ -26,8 +31,12 @@ export default function JobCard({ job, onUpdateCandidate }) {
     received_at,
     required_skills = [],
     min_experience,
-    candidates = []
+    candidates = [],
+    unread_count = 0,
+    thread_count = 0
   } = job;
+
+  const threads = getThreadsByJobId(job_id);
 
   const approvedCount = candidates.filter(c => c.status === 'approved').length;
   const pendingCount = candidates.filter(c => c.status === 'pending').length;
@@ -86,6 +95,19 @@ export default function JobCard({ job, onUpdateCandidate }) {
       setIsSending(false);
       setTimeout(() => setSendStatus(null), 5000);
     }
+  };
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    if (tab === 'conversation' && unread_count > 0) {
+      markThreadsRead(job_id);
+    }
+  };
+
+  const handleRefreshThreads = async (jobId) => {
+    // In a real implementation, this would fetch threads from the backend
+    // For now, we just trigger a re-render
+    console.log('Refreshing threads for job:', jobId);
   };
 
   return (
@@ -157,6 +179,16 @@ export default function JobCard({ job, onUpdateCandidate }) {
                 <span>{pendingCount}</span>
               </div>
             )}
+            {/* Thread/Message badge */}
+            {(thread_count > 0 || threads.length > 0) && (
+              <div className={`${styles.badge} ${styles.badgeMessage} ${unread_count > 0 ? styles.badgeUnread : ''}`}>
+                <MessageSquare size={14} />
+                <span>{threads.length || thread_count}</span>
+                {unread_count > 0 && (
+                  <span className={styles.unreadIndicator}>{unread_count}</span>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Expand button */}
@@ -190,73 +222,107 @@ export default function JobCard({ job, onUpdateCandidate }) {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
           >
-            {/* Candidates section header */}
-            <div className={styles.sectionHeader}>
-              <span className={styles.sectionTitle}>Matched Candidates</span>
-              <span className={styles.sectionCount}>{totalCount} total</span>
+            {/* Tab navigation */}
+            <div className={styles.tabNav}>
+              <button
+                className={`${styles.tabBtn} ${activeTab === 'candidates' ? styles.tabActive : ''}`}
+                onClick={(e) => { e.stopPropagation(); handleTabChange('candidates'); }}
+              >
+                <Users size={16} />
+                <span>Candidates</span>
+                <span className={styles.tabCount}>{totalCount}</span>
+              </button>
+              <button
+                className={`${styles.tabBtn} ${activeTab === 'conversation' ? styles.tabActive : ''}`}
+                onClick={(e) => { e.stopPropagation(); handleTabChange('conversation'); }}
+              >
+                <MessageSquare size={16} />
+                <span>Conversation</span>
+                {threads.length > 0 && <span className={styles.tabCount}>{threads.length}</span>}
+                {unread_count > 0 && <span className={styles.unreadBadge}>{unread_count}</span>}
+              </button>
             </div>
 
-            {/* Candidates list */}
-            <div className={styles.candidatesList}>
-              {candidates.map((candidate, index) => (
-                <CandidateRow
-                  key={candidate.candidate_id || index}
-                  candidate={candidate}
-                  index={index}
-                  onApprove={() => onUpdateCandidate(job_id, candidate.candidate_id, 'approved')}
-                  onReject={() => onUpdateCandidate(job_id, candidate.candidate_id, 'rejected')}
+            {/* Tab content */}
+            {activeTab === 'candidates' ? (
+              <>
+                {/* Candidates section header */}
+                <div className={styles.sectionHeader}>
+                  <span className={styles.sectionTitle}>Matched Candidates</span>
+                  <span className={styles.sectionCount}>{totalCount} total</span>
+                </div>
+
+                {/* Candidates list */}
+                <div className={styles.candidatesList}>
+                  {candidates.map((candidate, index) => (
+                    <CandidateRow
+                      key={candidate.candidate_id || index}
+                      candidate={candidate}
+                      index={index}
+                      onApprove={() => onUpdateCandidate(job_id, candidate.candidate_id, 'approved')}
+                      onReject={() => onUpdateCandidate(job_id, candidate.candidate_id, 'rejected')}
+                    />
+                  ))}
+                </div>
+
+                {/* Action bar */}
+                {approvedCount > 0 && (
+                  <div className={styles.actionBar}>
+                    <div className={styles.notesField}>
+                      <label className={styles.notesLabel}>Add notes for recruiter</label>
+                      <input
+                        type="text"
+                        className={styles.notesInput}
+                        placeholder="Optional notes about the candidates..."
+                        value={managerNotes}
+                        onChange={(e) => setManagerNotes(e.target.value)}
+                      />
+                    </div>
+
+                    <div className={styles.sendSection}>
+                      <span className={styles.selectedCount}>
+                        {approvedCount} candidate{approvedCount !== 1 ? 's' : ''} ready
+                      </span>
+                      <motion.button
+                        className={`${styles.sendButton} ${sendStatus === 'success' ? styles.sendSuccess : ''} ${sendStatus === 'error' ? styles.sendError : ''}`}
+                        onClick={handleSendApprovals}
+                        disabled={isSending || sendStatus === 'success'}
+                        whileHover={{ scale: isSending ? 1 : 1.02 }}
+                        whileTap={{ scale: isSending ? 1 : 0.98 }}
+                      >
+                        {isSending ? (
+                          <>
+                            <Loader2 size={18} className={styles.spinner} />
+                            <span>Sending...</span>
+                          </>
+                        ) : sendStatus === 'success' ? (
+                          <>
+                            <CheckCircle size={18} />
+                            <span>Sent!</span>
+                          </>
+                        ) : sendStatus === 'error' ? (
+                          <>
+                            <AlertCircle size={18} />
+                            <span>Failed</span>
+                          </>
+                        ) : (
+                          <>
+                            <Send size={18} />
+                            <span>Send to Recruiter</span>
+                          </>
+                        )}
+                      </motion.button>
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className={styles.conversationSection}>
+                <ConversationThread
+                  jobId={job_id}
+                  threads={threads}
+                  onRefresh={handleRefreshThreads}
                 />
-              ))}
-            </div>
-
-            {/* Action bar */}
-            {approvedCount > 0 && (
-              <div className={styles.actionBar}>
-                <div className={styles.notesField}>
-                  <label className={styles.notesLabel}>Add notes for recruiter</label>
-                  <input
-                    type="text"
-                    className={styles.notesInput}
-                    placeholder="Optional notes about the candidates..."
-                    value={managerNotes}
-                    onChange={(e) => setManagerNotes(e.target.value)}
-                  />
-                </div>
-
-                <div className={styles.sendSection}>
-                  <span className={styles.selectedCount}>
-                    {approvedCount} candidate{approvedCount !== 1 ? 's' : ''} ready
-                  </span>
-                  <motion.button
-                    className={`${styles.sendButton} ${sendStatus === 'success' ? styles.sendSuccess : ''} ${sendStatus === 'error' ? styles.sendError : ''}`}
-                    onClick={handleSendApprovals}
-                    disabled={isSending || sendStatus === 'success'}
-                    whileHover={{ scale: isSending ? 1 : 1.02 }}
-                    whileTap={{ scale: isSending ? 1 : 0.98 }}
-                  >
-                    {isSending ? (
-                      <>
-                        <Loader2 size={18} className={styles.spinner} />
-                        <span>Sending...</span>
-                      </>
-                    ) : sendStatus === 'success' ? (
-                      <>
-                        <CheckCircle size={18} />
-                        <span>Sent!</span>
-                      </>
-                    ) : sendStatus === 'error' ? (
-                      <>
-                        <AlertCircle size={18} />
-                        <span>Failed</span>
-                      </>
-                    ) : (
-                      <>
-                        <Send size={18} />
-                        <span>Send to Recruiter</span>
-                      </>
-                    )}
-                  </motion.button>
-                </div>
               </div>
             )}
           </motion.div>
